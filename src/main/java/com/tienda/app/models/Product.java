@@ -28,7 +28,7 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private BigDecimal tax;
+    private double tax;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -82,11 +82,11 @@ public class Product {
         this.price = price;
     }
 
-    public BigDecimal getTax() {
+    public double getTax() {
         return tax;
     }
 
-    public void setTax(BigDecimal tax) {
+    public void setTax(double tax) {
         this.tax = tax;
     }
 
