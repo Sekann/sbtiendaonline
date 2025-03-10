@@ -50,7 +50,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/login",
                                 "/users",
-                                "/users/register"
+                                "/users/register",
+                                "users/check-token"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

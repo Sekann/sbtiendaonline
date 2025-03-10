@@ -2,6 +2,7 @@ package
         com.tienda.app.services
         ;
 
+import com.tienda.app.dtos.auth.CheckTokenRequest;
 import com.tienda.app.dtos.auth.LoginRequest;
 import com.tienda.app.dtos.auth.LoginResponse;
 import com.tienda.app.dtos.auth.RegisterRequest;
@@ -117,5 +118,12 @@ public class UserService implements UserDetailsService {
         loginData.setToken(this.jwtUtil.generateToken(user.getUsername()));
 
         return loginData;
+    }
+
+    public boolean checkToken(CheckTokenRequest checkTokenRequest) {
+        return this.jwtUtil.validateToken(
+                checkTokenRequest.getToken(),
+                checkTokenRequest.getUsername()
+        );
     }
 }

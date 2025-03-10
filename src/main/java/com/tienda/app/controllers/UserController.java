@@ -78,5 +78,8 @@ public class UserController {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
-
+    @PostMapping("/check-token")
+    public  ResponseEntity<Boolean> checkToken(){
+        return ResponseEntity.ok(true);
+    }
 }
