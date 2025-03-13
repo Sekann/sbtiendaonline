@@ -77,20 +77,18 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @PostMapping("/change-password")
-//    public ResponseEntity<String> changePassword(
-//            @RequestBody UserDetails userDetails,
-//            @RequestBody Map<String, String> passwordData) {
-//
-//        String oldPassword = passwordData.get("oldPassword");
-//        String newPassword = passwordData.get("newPassword");
-//
-//        boolean updated = userService.updatePassword(userDetails.getUsername(), oldPassword, newPassword);
-//
-//        if (updated) {
-//            return ResponseEntity.ok("✅ Contraseña cambiada correctamente");
-//        } else {
-//            return ResponseEntity.badRequest().body("❌ Contraseña antigua incorrecta.");
-//        }
-//    }
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        String username = request.getUsername();
+        String oldPassword = request.getOldPassword();
+        String newPassword = request.getNewPassword();
+
+        boolean updated = userService.updatePassword(username, oldPassword, newPassword);
+
+        if (updated) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

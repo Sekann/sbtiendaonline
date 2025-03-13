@@ -2,6 +2,7 @@ package com.tienda.app.dtos.auth;
 
 public class UserDetailResponse {
 
+
     private String firstName;
     private String lastName;
     private String address;

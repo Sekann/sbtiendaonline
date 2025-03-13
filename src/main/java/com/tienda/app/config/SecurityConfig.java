@@ -58,6 +58,7 @@ public class SecurityConfig {
                                 "/users/register",
                                 "/users/check-token",
                                 "/users/profile",
+                                "/users/change-password",
                                 "/products"
                         ).permitAll()
                         .anyRequest().authenticated()
