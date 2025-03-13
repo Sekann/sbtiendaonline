@@ -1,13 +1,11 @@
 package com.tienda.app.controllers;
 
-import com.tienda.app.dtos.auth.LoginRequest;
-import com.tienda.app.dtos.auth.LoginResponse;
-import com.tienda.app.dtos.auth.RegisterRequest;
+import com.tienda.app.dtos.auth.*;
 import com.tienda.app.models.User;
+import com.tienda.app.models.UserInfo;
 import com.tienda.app.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,26 +71,26 @@ public class UserController {
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@RequestBody UserDetails userDetails) {
-        Optional<User> user = userService.getUserProfile(userDetails.getUsername());
+    @PostMapping("/profile")
+    public ResponseEntity<?> getProfile(@RequestBody UserDetailRequest userDetails) {
+        Optional<UserDetailResponse> user = userService.getUserProfile(userDetails.getUsername());
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(
-            @RequestBody UserDetails userDetails,
-            @RequestBody Map<String, String> passwordData) {
-
-        String oldPassword = passwordData.get("oldPassword");
-        String newPassword = passwordData.get("newPassword");
-
-        boolean updated = userService.updatePassword(userDetails.getUsername(), oldPassword, newPassword);
-
-        if (updated) {
-            return ResponseEntity.ok("✅ Contraseña cambiada correctamente");
-        } else {
-            return ResponseEntity.badRequest().body("❌ Contraseña antigua incorrecta.");
-        }
-    }
+//    @PostMapping("/change-password")
+//    public ResponseEntity<String> changePassword(
+//            @RequestBody UserDetails userDetails,
+//            @RequestBody Map<String, String> passwordData) {
+//
+//        String oldPassword = passwordData.get("oldPassword");
+//        String newPassword = passwordData.get("newPassword");
+//
+//        boolean updated = userService.updatePassword(userDetails.getUsername(), oldPassword, newPassword);
+//
+//        if (updated) {
+//            return ResponseEntity.ok("✅ Contraseña cambiada correctamente");
+//        } else {
+//            return ResponseEntity.badRequest().body("❌ Contraseña antigua incorrecta.");
+//        }
+//    }
 }

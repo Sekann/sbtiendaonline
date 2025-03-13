@@ -1,9 +1,6 @@
 package com.tienda.app.services;
 
-import com.tienda.app.dtos.auth.CheckTokenRequest;
-import com.tienda.app.dtos.auth.LoginRequest;
-import com.tienda.app.dtos.auth.LoginResponse;
-import com.tienda.app.dtos.auth.RegisterRequest;
+import com.tienda.app.dtos.auth.*;
 import com.tienda.app.models.Role;
 import com.tienda.app.models.User;
 import com.tienda.app.models.UserInfo;
@@ -116,8 +113,20 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public Optional<User> getUserProfile(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<UserDetailResponse> getUserProfile(String username) {
+
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("User not found")
+        );
+
+        UserInfo userInfo = this.userInfoRepository.findByUserId(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("user not found")
+        );
+
+        UserDetailResponse userDetailResponse = new UserDetailResponse (
+                userInfo.getFirstName(), userInfo.getLastName(), userInfo.getAddress());
+
+        return Optional.ofNullable(userDetailResponse);
     }
 
     @Transactional
