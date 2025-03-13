@@ -5,24 +5,14 @@ import com.tienda.app.dtos.auth.LoginResponse;
 import com.tienda.app.dtos.auth.RegisterRequest;
 import com.tienda.app.models.User;
 import com.tienda.app.services.UserService;
-import jakarta.persistence.Id;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-/*
- *   200-> todo bien
- *   201 todo bien pero para update
- *   204 todo bien pero para borrar
- *   400 error de identificacion
- *   401 error de datos incorectos
- *   403 permiso denegado
- *   404 no se a encontrado
- *   500 error en el servidor
- */
 
 @RestController
 @RequestMapping("/users")
@@ -39,31 +29,31 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getAllUsers());
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<Optional<User>> getUserById(Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(this.userService.getUserById(id));
     }
 
-    @GetMapping("/username")
-    public ResponseEntity<Optional<User>> findByUsername(String username) {
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Optional<User>> findByUsername(@PathVariable String username) {
         return ResponseEntity.ok(this.userService.findByUsername(username));
     }
 
-    @DeleteMapping("/id")
-    public void deleteUserById(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
         if (userService.getUserById(id).isPresent()) {
             userService.deleteUserById(id);
+            return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.notFound().build();
     }
 
-    //htt://localhost:8080/api/users/login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest credentials) {
         try {
             LoginResponse loginResponse = this.userService.login(credentials);
             return ResponseEntity.ok(loginResponse);
-        }
-        catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
@@ -73,13 +63,36 @@ public class UserController {
         try {
             User user = this.userService.createUser(registerRequest);
             return ResponseEntity.ok(user);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
+
     @PostMapping("/check-token")
-    public  ResponseEntity<Boolean> checkToken(){
+    public ResponseEntity<Boolean> checkToken() {
         return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@RequestBody UserDetails userDetails) {
+        Optional<User> user = userService.getUserProfile(userDetails.getUsername());
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody UserDetails userDetails,
+            @RequestBody Map<String, String> passwordData) {
+
+        String oldPassword = passwordData.get("oldPassword");
+        String newPassword = passwordData.get("newPassword");
+
+        boolean updated = userService.updatePassword(userDetails.getUsername(), oldPassword, newPassword);
+
+        if (updated) {
+            return ResponseEntity.ok("✅ Contraseña cambiada correctamente");
+        } else {
+            return ResponseEntity.badRequest().body("❌ Contraseña antigua incorrecta.");
+        }
     }
 }

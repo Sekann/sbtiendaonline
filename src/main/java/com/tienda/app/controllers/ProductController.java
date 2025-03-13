@@ -2,7 +2,6 @@ package com.tienda.app.controllers;
 
 import com.tienda.app.models.Product;
 import com.tienda.app.services.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +10,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin("*")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -22,8 +25,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Product>> getProductById( Long id) {
-        return ResponseEntity.ok(this.productService.getProductById(id));
+    public ResponseEntity<Optional<Product>> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping
@@ -32,7 +35,7 @@ public class ProductController {
         return ResponseEntity.status(201).body(newProduct);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

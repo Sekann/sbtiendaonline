@@ -1,6 +1,5 @@
 package com.tienda.app.config;
 
-
 import com.tienda.app.repositories.UserRepository;
 import com.tienda.app.security.JwtAuthenticationFilter;
 import com.tienda.app.security.JwtUtil;
@@ -16,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -38,6 +40,7 @@ public class SecurityConfig {
                         .build()
                 ).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService) {
         return new JwtAuthenticationFilter(this.jwtUtil, userDetailsService);
@@ -45,22 +48,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/login",
                                 "/users",
                                 "/users/register",
-                                "users/check-token"
+                                "/users/check-token",
+                                "/users/profile",
+                                "/products"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return
-                http.build
-                        ();
+        return http.build();
     }
 
     @Bean
@@ -72,5 +81,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

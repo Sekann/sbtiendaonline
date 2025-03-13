@@ -2,31 +2,35 @@ package com.tienda.app.services;
 
 import com.tienda.app.models.Product;
 import com.tienda.app.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     public List<Product> getAllProducts() {
-        return this.productRepository.findAll();
+        return productRepository.findAll();
     }
 
     public Optional<Product> getProductById(Long id) {
-        return this.productRepository.findById(id);
+        return productRepository.findById(id);
     }
 
     public Product saveProduct(Product product) {
-        return this.productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public void deleteProduct(Long id) {
-        this.productRepository.deleteById(id);
+        productRepository.deleteById(id);
     }
 }
