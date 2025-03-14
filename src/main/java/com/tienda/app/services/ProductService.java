@@ -1,6 +1,8 @@
 package com.tienda.app.services;
 
+import com.tienda.app.dtos.auth.ProductRequest;
 import com.tienda.app.models.Product;
+import com.tienda.app.models.User;
 import com.tienda.app.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,15 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product saveProduct(Product product) {
+    public Product createProduct(ProductRequest productRequest, User user) {
+        Product product = new Product();
+        product.setName(productRequest.getName());
+        product.setImageUrl(productRequest.getImageUrl());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setTax(productRequest.getTax());
+        product.setCurrency(productRequest.getCurrency());
+        product.setUser(user);
         return productRepository.save(product);
     }
 
