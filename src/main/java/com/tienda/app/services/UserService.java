@@ -102,6 +102,7 @@ public class UserService implements UserDetailsService {
         loginData.setUsername(credentials.getUsername());
         loginData.setRole(user.getRole().getRoleName());
         loginData.setToken(this.jwtUtil.generateToken(user.getUsername()));
+        loginData.setUserId(user.getId());
 
         return loginData;
     }

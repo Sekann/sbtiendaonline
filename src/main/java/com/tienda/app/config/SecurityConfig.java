@@ -60,8 +60,10 @@ public class SecurityConfig {
                                 "/users/profile",
                                 "/users/change-password",
                                 "/products",
-                                "/products/create"
+                                "/products/create",
+                                "products/delete/{id}"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

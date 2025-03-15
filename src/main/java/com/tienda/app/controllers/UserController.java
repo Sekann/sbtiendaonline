@@ -67,8 +67,9 @@ public class UserController {
     }
 
     @PostMapping("/check-token")
-    public ResponseEntity<Boolean> checkToken() {
-        return ResponseEntity.ok(true);
+    public ResponseEntity<Boolean> checkToken(@RequestBody CheckTokenRequest checkTokenRequest) {
+        boolean isValid = userService.checkToken(checkTokenRequest);
+        return ResponseEntity.ok(isValid);
     }
 
     @PostMapping("/profile")
