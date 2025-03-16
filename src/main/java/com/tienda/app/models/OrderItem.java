@@ -19,7 +19,7 @@ public class OrderItem {
     private Product product;
 
     @Column(nullable = false)
-    private Integer cantidad;
+    private Integer quantity;
 
     @Column(nullable = false)
     private Double subtotal;
@@ -48,12 +48,12 @@ public class OrderItem {
         this.product = product;
     }
 
-    public Integer getCantidad() {
-        return cantidad;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Double getSubtotal() {

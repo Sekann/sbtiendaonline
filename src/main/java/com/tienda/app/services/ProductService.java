@@ -19,6 +19,9 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+    public List<Product> getAllProducts() {
+        return this.productRepository.findAll();
+    }
 
     public List<Product> getProductsByUserId(Long userId) {
         return productRepository.findByUserId(userId);

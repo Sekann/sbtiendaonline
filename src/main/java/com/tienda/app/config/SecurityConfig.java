@@ -60,8 +60,15 @@ public class SecurityConfig {
                                 "/users/profile",
                                 "/users/change-password",
                                 "/products",
+                                "/products/{id}",
+                                "/products/all",
                                 "/products/create",
-                                "products/delete/{id}"
+                                "/products/delete/{id}",
+                                "/orders",
+                                "/orders/{id}",
+                                "/orders/user/{userId}",
+                                "/order-items",
+                                "/order-items/{id}"
                         ).permitAll()
 
                         .anyRequest().authenticated()
